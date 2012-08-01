@@ -1,0 +1,11 @@
+Package: mountfstab
+Version: 1
+Section: extra
+Priority: optional
+Architecture: amd64
+Depends: python,
+	 python-pyparsing,
+	 gdisk
+Installed-Size: 36k
+Maintainer: Atila Romero
+Description: Utilities to mount squash files.

@@ -1,5 +1,5 @@
-MKFSTAB=/git/triagem/mkfstab.py
-MOUNTFSTAB=/git/triagem/mountfstab.py
+MKFSTAB=/usr/bin/mkfstab.py
+MOUNTFSTAB=/usr/bin/mountfstab.py
 DEFAULTDDOPTIONS=ro,iocharset=utf8,umask=0227
 DEFAULTSQUASHOPTIONS=ro,umask=227,_netdev,noexec,uid=root,gid=root,loop
 DDEXTREGEXPR='\.dd$$\|\.img$$\|\.001$$\|\.iso$$\|\.tao$$'
