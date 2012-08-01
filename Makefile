@@ -3,7 +3,7 @@ MOUNTFSTAB=/usr/bin/mountfstab.py
 DEFAULTDDOPTIONS=ro,iocharset=utf8,umask=0227
 DEFAULTSQUASHOPTIONS=ro,umask=227,_netdev,noexec,uid=root,gid=root,loop
 DDEXTREGEXPR='\.dd$$\|\.img$$\|\.001$$\|\.iso$$\|\.tao$$'
-#DEFAULTMNT='equipeXX/itemXX-tipo(HD,pendrive)-NumMaterial/'
+#DEFAULTMNT='eqXX/itemXX-type(HD,pendrive)-NumMat/'
 DEFAULTMNT='XXX/itemXX-XX-MXXXX/'
 
 .PHONY: importconfig dd squash umountdd umountsquash squash subdirs $(SUBDIRS)
@@ -20,11 +20,11 @@ include config
 
 config:
 	@echo 'SUBDIRS=' >> config ;\
-        echo 'OPERACAO=' >> config
+        echo 'GROUP=' >> config
 
 checkop:
-ifeq ($(strip $(OPERACAO)), )
-	@echo preencha o nome da operacao no arquivo config
+ifeq ($(strip $(GROUP)), )
+	@echo Please, fill GROUP in the config file.
 	exit 1
 endif
 
@@ -32,7 +32,7 @@ dd.fstab: dd.list
 	sed -e '/^ *$$/d' dd.list | while read ddfile ddmnt ;\
 	do mkdir -p $$ddmnt ;\
 	$(MKFSTAB) $$ddfile --basemountdir=$$ddmnt \
-	  --appendoptions=$(DEFAULTDDOPTIONS),gid=$(OPERACAO) ;\
+	  --appendoptions=$(DEFAULTDDOPTIONS),gid=$(GROUP) ;\
 	done > dd.fstab
 	chmod 600 dd.fstab
 

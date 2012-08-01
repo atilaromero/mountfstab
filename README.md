@@ -29,11 +29,14 @@ Suppose your directory has these files:
     images.squash
     Makefile
 
-Run make once:
+Run make:
 
     make
 
-It will:
+It will create a config file, which must be edited.
+The GROUP variable must be defined.
+
+Run make again. Now it will:
 
 - create squash.list from existing '.squash' files (format: file mountpoint)
 
