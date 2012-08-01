@@ -61,6 +61,11 @@ It will:
 
 - mount dd.fstab
 
+.list files
+===========
+The .list files are used just to create the .fstab files. They aren't 
+needed if the .fstab already exists.
+
 Umount
 ======
 
