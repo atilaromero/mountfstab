@@ -10,28 +10,28 @@ The Makefile is used **after** instalation, to mount the images.
 
 Ubuntu/Debian
 -------------
-* Create a .deb::
+- Create a .deb:
 
-  dpkg -b deb/ mountfstab.deb
+    dpkg -b deb/ mountfstab.deb
 
-* Install mountfstab.dev::
+- Install mountfstab.dev:
 
-  sudo dpkg -i mountfstab.deb
+    sudo dpkg -i mountfstab.deb
 
-* Copy Makefile to your images directory::
+- Copy Makefile to your images directory:
 
-  cp Makefile ~/mydir/
+    cp Makefile ~/mydir/
 
 Usage
 =====
-Suppose your directory has these files::
+Suppose your directory has these files:
 
-  images.squash
-  Makefile
+    images.squash
+    Makefile
 
-Run make once::
+Run make once:
 
-  make
+    make
 
 It will:
 
@@ -43,14 +43,14 @@ It will:
 
 #. create dd.list.example from existing '.dd' files (format: file mountpoint)
 
-The dd.list.example must be editted and saved as 'dd.list'::
+The dd.list.example must be editted and saved as 'dd.list':
 
     nano dd.list.example
     mv dd.list.example dd.list
 
-Run make again::
+Run make again:
 
-  make
+    make
 
 It will:
 
@@ -61,8 +61,8 @@ It will:
 Umount
 ======
 
-Run::
+Run:
 
-  make umount
+    make umount
 
 It will umount the dd files and the squash ones.
