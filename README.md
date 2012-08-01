@@ -35,13 +35,13 @@ Run make once:
 
 It will:
 
-#. create squash.list from existing '.squash' files (format: file mountpoint)
+- create squash.list from existing '.squash' files (format: file mountpoint)
 
-#. create squash.fstab from squash.list
+- create squash.fstab from squash.list
 
-#. mount squash.fstab
+- mount squash.fstab
 
-#. create dd.list.example from existing '.dd' files (format: file mountpoint)
+- create dd.list.example from existing '.dd' files (format: file mountpoint)
 
 The dd.list.example must be editted and saved as 'dd.list':
 
@@ -54,9 +54,9 @@ Run make again:
 
 It will:
 
-#. create dd.fstab from dd.list
+- create dd.fstab from dd.list
 
-#. mount dd.fstab
+- mount dd.fstab
 
 Umount
 ======
