@@ -1,5 +1,3 @@
-SUBDIRS=
-OPERACAO=
 MKFSTAB=/git/triagem/mkfstab.py
 MOUNTFSTAB=/git/triagem/mountfstab.py
 DEFAULTDDOPTIONS=ro,iocharset=utf8,umask=0227
@@ -8,18 +6,25 @@ DDEXTREGEXPR='\.dd$$\|\.img$$\|\.001$$\|\.iso$$\|\.tao$$'
 #DEFAULTMNT='equipeXX/itemXX-tipo(HD,pendrive)-NumMaterial/'
 DEFAULTMNT='XXX/itemXX-XX-MXXXX/'
 
-.PHONY: checkop dd squash umountdd umountsquash squash subdirs $(SUBDIRS)
+.PHONY: importconfig dd squash umountdd umountsquash squash subdirs $(SUBDIRS)
 
 #subdirs: $(SUBDIRS) dd
 #$(SUBDIRS):
 #	$(MAKE) -f $@/Makefile
 
-dd: checkop squash dd.fstab
+dd: config checkop squash dd.fstab
 	$(MOUNTFSTAB) --mkdir -v dd.fstab
+
+importconfig: config
+include config
+
+config:
+	@echo 'SUBDIRS=' >> config ;\
+        echo 'OPERACAO=' >> config
 
 checkop:
 ifeq ($(strip $(OPERACAO)), )
-	@echo preencha o nome da operacao no arquivo Makefile
+	@echo preencha o nome da operacao no arquivo config
 	exit 1
 endif
 
