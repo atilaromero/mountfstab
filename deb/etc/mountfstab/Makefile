@@ -22,7 +22,7 @@ mountfstab.config:
 PHONY += subdirs $(SUBDIRS)
 subdirs: $(SUBDIRS)
 $(SUBDIRS):
-	$(MAKE) -f $@/Makefile
+	$(MAKE) -C $@
 
 PHONY += checkop
 checkop:
