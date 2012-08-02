@@ -4,10 +4,6 @@ and then mount them too.
 INSTALL
 =======
 
-**Do not use "make"**
-
-The Makefile is used **after** instalation, to mount the images.
-
 Ubuntu/Debian
 -------------
 - Create a .deb:
@@ -18,9 +14,11 @@ Ubuntu/Debian
 
     sudo dpkg -i mountfstab.deb
 
-- Copy Makefile to your images directory:
+- Copy the Makefile to your images directory:
 
-    cp Makefile ~/mydir/
+    cp /etc/mountfstab/Makefile ~/mydir/
+
+- Edit the new Makefile if you wish
 
 Usage
 =====
@@ -33,7 +31,7 @@ Run make:
 
     make
 
-It will create a config file, which must be edited.
+It will create a file named mountfstab.config, which must be edited.
 The GROUP variable must be defined.
 
 Run make again. Now it will:
@@ -65,6 +63,8 @@ It will:
 ===========
 The .list files are used just to create the .fstab files. They aren't 
 needed if the .fstab already exists.
+
+If the .fstab exists, the program won't read the .list files at all.
 
 Umount
 ======

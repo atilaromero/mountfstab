@@ -6,27 +6,34 @@ DDEXTREGEXPR='\.dd$$\|\.img$$\|\.001$$\|\.iso$$\|\.tao$$'
 #DEFAULTMNT='eqXX/itemXX-type(HD,pendrive)-NumMat/'
 DEFAULTMNT='XXX/itemXX-XX-MXXXX/'
 
-.PHONY: importconfig dd squash umountdd umountsquash squash subdirs $(SUBDIRS)
+PHONY := _all
+_all: mountfstab.config checkop all
 
-#subdirs: $(SUBDIRS) dd
-#$(SUBDIRS):
-#	$(MAKE) -f $@/Makefile
+PHONY += importconfig
+importconfig:
+include mountfstab.config
 
-dd: config checkop squash dd.fstab
-	$(MOUNTFSTAB) --mkdir -v dd.fstab
+mountfstab.config:
+	echo 'SUBDIRS=' >> mountfstab.config ;\
+        echo 'GROUP=' >> mountfstab.config ;\
+	echo 'all: subdirs squash dd' >> mountfstab.config
+	chmod o-r mountfstab.config
 
-importconfig: config
-include config
-
-config:
-	@echo 'SUBDIRS=' >> config ;\
-        echo 'GROUP=' >> config
-
+PHONY += checkop
 checkop:
 ifeq ($(strip $(GROUP)), )
-	@echo Please, fill GROUP in the config file.
+	@echo Please, fill GROUP in the mountfstab.config file.
 	exit 1
 endif
+
+PHONY += subdirs $(SUBDIRS)
+subdirs: $(SUBDIRS)
+$(SUBDIRS):
+	$(MAKE) -f $@/Makefile
+
+PHONY += dd
+dd: squash dd.fstab
+	$(MOUNTFSTAB) --mkdir -v dd.fstab
 
 dd.fstab: dd.list
 	sed -e '/^ *$$/d' dd.list | while read ddfile ddmnt ;\
@@ -48,6 +55,7 @@ dd.list.example:
 	done > dd.list.example
 	chmod 600 dd.list.example
 
+PHONY += squash
 squash: squash.fstab
 	$(MOUNTFSTAB) --mkdir -v squash.fstab
 
@@ -64,10 +72,20 @@ squash.list:
 	done > squash.list
 	chmod 600 squash.list
 
-umount umountsquash: umountdd
-	sed -e '/^ *$$/d' squash.fstab | while read file mnt rest ;\
-	do umount -v $$mnt || echo -n ; done
+umount: umountsubdirs umountsquash
 
+PHONY += umountsubdirs
+umountsubdirs: 
+	for i in $(SUBDIRS); do \
+		$(MAKE) -f "$$i"/Makefile umount; \
+	done
+
+PHONY += umountsquash
+umountsquash: umountdd
+	$(MOUNTFSTAB) --umount -v squash.fstab
+
+PHONY += umountdd
 umountdd:
-	sed -e '/^ *$$/d' dd.fstab | while read file mnt rest ;\
-	do umount -v $$mnt || echo -n; done
+	$(MOUNTFSTAB) --umount -v dd.fstab
+
+.PHONY: $(PHONY)
