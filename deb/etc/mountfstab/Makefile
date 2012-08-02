@@ -7,7 +7,7 @@ DDEXTREGEXPR='\.dd$$\|\.img$$\|\.001$$\|\.iso$$\|\.tao$$'
 DEFAULTMNT='XXX/itemXX-XX-MXXXX/'
 
 PHONY := _all
-_all: mountfstab.config checkop all
+_all: mountfstab.config all
 
 PHONY += importconfig
 importconfig:
@@ -16,8 +16,13 @@ include mountfstab.config
 mountfstab.config:
 	echo 'SUBDIRS=' >> mountfstab.config ;\
         echo 'GROUP=' >> mountfstab.config ;\
-	echo 'all: subdirs squash dd' >> mountfstab.config
+	echo 'all: subdirs dd' >> mountfstab.config
 	chmod o-r mountfstab.config
+
+PHONY += subdirs $(SUBDIRS)
+subdirs: $(SUBDIRS)
+$(SUBDIRS):
+	$(MAKE) -f $@/Makefile
 
 PHONY += checkop
 checkop:
@@ -26,13 +31,8 @@ ifeq ($(strip $(GROUP)), )
 	exit 1
 endif
 
-PHONY += subdirs $(SUBDIRS)
-subdirs: $(SUBDIRS)
-$(SUBDIRS):
-	$(MAKE) -f $@/Makefile
-
 PHONY += dd
-dd: squash dd.fstab
+dd: checkop squash dd.fstab
 	$(MOUNTFSTAB) --mkdir -v dd.fstab
 
 dd.fstab: dd.list
