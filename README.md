@@ -1,10 +1,14 @@
-This tiny application mounts squash files that have HD images in it, 
+This tiny application mounts squash files that have dd images in it, 
 and then mount them too.
+
+It also install Upstart services to mount and umount these images.
+
+With a few modifications, it can just mount dd images.
 
 INSTALL
 =======
 
-Ubuntu/Debian
+Ubuntu
 -------------
 - Create a .deb:
 
@@ -14,15 +18,21 @@ Ubuntu/Debian
 
     sudo dpkg -i mountfstab.deb
 
-- Copy the Makefile to your images directory:
+- Go to /etc/mountfstab and create mountfstab.config. Suggestion of contents:
 
-    cp /etc/mountfstab/Makefile ~/mydir/
+    SUBDIRS=/mnt/mysubdir
+    GROUP=
+    all: subdirs
+    umount: umountsubdirs
 
-- Edit the new Makefile if you wish
+- Link the Makefile to your images directory:
+
+    ln -s /etc/mountfstab/Makefile ~/mydir/
 
 Usage
 =====
 Suppose your directory has these files:
+(Makefile is a link to /etc/mountfstab/Makefile)
 
     images.squash
     Makefile
