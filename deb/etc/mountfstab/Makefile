@@ -16,7 +16,8 @@ include mountfstab.config
 mountfstab.config:
 	echo 'SUBDIRS=' >> mountfstab.config ;\
         echo 'GROUP=' >> mountfstab.config ;\
-	echo 'all: subdirs dd' >> mountfstab.config
+	echo 'all: subdirs dd' >> mountfstab.config ;\
+	echo 'umount: umountsubdirs umountsquash' >> mountfstab.config
 	chmod o-r mountfstab.config
 
 PHONY += subdirs $(SUBDIRS)
@@ -72,12 +73,11 @@ squash.list:
 	done > squash.list
 	chmod 600 squash.list
 
-umount: umountsubdirs umountsquash
 
 PHONY += umountsubdirs
 umountsubdirs: 
 	for i in $(SUBDIRS); do \
-		$(MAKE) -f "$$i"/Makefile umount; \
+		$(MAKE) -C "$$i" umount; \
 	done
 
 PHONY += umountsquash
@@ -88,4 +88,4 @@ PHONY += umountdd
 umountdd:
 	$(MOUNTFSTAB) --umount -v dd.fstab
 
-.PHONY: $(PHONY)
+.PHONY: all umount $(PHONY)
