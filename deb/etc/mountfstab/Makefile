@@ -56,6 +56,13 @@ dd.list.example:
 	done > dd.list.example
 	chmod 600 dd.list.example
 
+PHONY += listddmnt
+listddmnt:
+	@if test -e dd.fstab; then $(MOUNTFSTAB) --listmnt dd.fstab; fi
+	@for i in $(SUBDIRS); do \
+		$(MAKE) -s -C "$$i" listddmnt; \
+	done
+
 PHONY += squash
 squash: squash.fstab
 	$(MOUNTFSTAB) --mkdir -v squash.fstab

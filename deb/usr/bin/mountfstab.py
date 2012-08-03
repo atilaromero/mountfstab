@@ -10,6 +10,7 @@ def main():
     p.add_option('--mkdir', action='store_true',default=False)
     p.add_option('--checkfirst', '-c',action='store_true',default=True)
     p.add_option('--umount', '-u',action='store_true',default=False)
+    p.add_option('--listmnt', action='store_true',default=False)
     p.add_option('--norun', '-n',action='store_true',default=False)
     p.add_option('--verbose', '-v',action='store_true',default=False,
                  help="print commands to stderr")
@@ -23,7 +24,8 @@ def main():
                    norun=options.norun,
                    umount=options.umount,
                    mkdir=options.mkdir,
-                   checkfirst=options.checkfirst)
+                   checkfirst=options.checkfirst,
+                   listmnt=options.listmnt)
     return ret
 
 def mountpointmounted(mountpoint):
@@ -36,7 +38,7 @@ def mountpointmounted(mountpoint):
                     return True
     return False
 
-def mount(fstabpath,verbose=False,norun=False,umount=False,mkdir=False,checkfirst=True):
+def mount(fstabpath,verbose=False,norun=False,umount=False,mkdir=False,checkfirst=True,listmnt=False):
     content=pp.OneOrMore(pp.QuotedString('"',escChar='\\') | 
                          pp.QuotedString("'",escChar='\\') | 
                          pp.Word(pp.printables.replace('#','')))
@@ -53,18 +55,20 @@ def mount(fstabpath,verbose=False,norun=False,umount=False,mkdir=False,checkfirs
                         ret=mount(tokens[1],verbose,norun)
                     else:
                         src,dst,typ,ops=tokens[:4]
-                        if not umount:
+                        if umount:
+                            if checkfirst and not mountpointmounted(dst):
+                                pass
+                            else:
+                                ret+=cmd(['umount',dst],verbose,norun)
+                        elif listmnt:
+                            print dst
+                        else:
                             if mkdir:
                                 cmd(['mkdir','-p',dst])
                             if checkfirst and mountpointmounted(dst):
                                 pass
                             else:
                                 ret+=cmd(['mount',src,dst,'-t',typ,'-o',ops],verbose,norun)
-                        else:
-                            if checkfirst and not mountpointmounted(dst):
-                                pass
-                            else:
-                                ret+=cmd(['umount',dst],verbose,norun)
     return ret
                             
             
