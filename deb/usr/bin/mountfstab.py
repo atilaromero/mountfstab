@@ -61,7 +61,7 @@ def mount(fstabpath,verbose=False,norun=False,umount=False,mkdir=False,checkfirs
                             else:
                                 ret+=cmd(['umount',dst],verbose,norun)
                         elif listmnt:
-                            print dst
+                            print os.path.realpath(dst)
                         else:
                             if mkdir:
                                 cmd(['mkdir','-p',dst])
