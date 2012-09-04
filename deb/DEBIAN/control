@@ -1,11 +1,12 @@
-Package: mountfstab
-Version: 1
+Package: setec-mountfstab
+Version: 2
 Section: extra
 Priority: optional
 Architecture: amd64
 Depends: python,
 	 python-pyparsing,
 	 gdisk
+Replaces: mountfstab
 Installed-Size: 36k
 Maintainer: Atila Romero
 Description: Utilities to mount squash files.

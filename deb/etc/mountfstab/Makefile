@@ -9,8 +9,8 @@ DEFAULTMNT='XXX/itemXX-XX-MXXXX/'
 PHONY := _all
 _all: mountfstab.config all
 
-PHONY += importconfig
-importconfig:
+#PHONY += importconfig
+#importconfig:
 include mountfstab.config
 
 mountfstab.config:
