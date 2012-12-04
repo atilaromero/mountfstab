@@ -47,7 +47,7 @@ def mount(fstabpath,verbose=False,norun=False,umount=False,mkdir=False,checkfirs
         indent=0
         ret=0
         for line in f:
-            if len(line.strip())>0:
+            if (len(line.strip())>0) and not line.strip().startswith('#'):
                 lineindent=len(line)-len(line.lstrip(' \t'))
                 tokens=content.parseString(line)
                 if len(tokens)>0:

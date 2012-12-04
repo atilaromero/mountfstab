@@ -16,15 +16,23 @@ def main():
 
 def printparts(rpath,basemountdir,appendoptions):
   x=0
+  y=0
   opj=os.path.join
   opd=os.path.dirname
   if not basemountdir:
       basemountdir=opd(rpath)
   for particao in readpartitiontable(rpath):
-      dest=opj(basemountdir,chr(ord('C')+x))
+      if particao['size']=='204800':
+          dest=opj(basemountdir,'Boot'+str(y))
+          y+=1
+      else:
+          dest=opj(basemountdir,chr(ord('C')+x))
+          x+=1
       options=','.join(['offset=%i'%particao['offset'],appendoptions])
-      print rpath,dest,'auto',options
-      x+=1
+      if rpath.endswith('.iso'):
+          print rpath,dest,'iso9660',options.replace(',umask=0227','')
+      else:
+          print rpath,dest,'auto',options
 
 def readpartitiontable(ddfilepath):
   particoes=[]
