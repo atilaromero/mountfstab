@@ -1,17 +1,22 @@
 MAKESUBDIRS=
 FSTABS=
-REVFSTABS=$(for x in ${FSTABS}; do echo $$x;done | tac)
+REVFSTABS=$$(for x in ${FSTABS}; do echo $$x;done | tac)
 MOUNTFSTAB=/usr/bin/mountfstab.py
 
 PHONY := _all
 _all: all
 
-all: mountfstabs mountmakesubdirs
-umount: umountmakesubdirs umountfstabs
+all: mountfstabs postfstabs mountmakesubdirs
+umount: preumount umountmakesubdirs umountfstabs
 
+PHONY += postfstabs
+postfstabs:
+
+PHONY += preumount
+preumount:
 
 PHONY += mountmakesubdirs
-mountmakesubdirs: 
+mountmakesubdirs:
 	for i in $(MAKESUBDIRS); do \
 		$(MAKE) -C "$$i" ; \
 	done
@@ -42,6 +47,5 @@ listmnt:
 	@for i in $(MAKESUBDIRS); do \
 		$(MAKE) -s -C "$$i" listmnt; \
 	done
-
 
 .PHONY: all umount $(PHONY)
