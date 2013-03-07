@@ -1,98 +1,47 @@
-MKFSTAB=/usr/bin/mkfstab.py
+MAKESUBDIRS=
+FSTABS=
+REVFSTABS=$(for x in ${FSTABS}; do echo $$x;done | tac)
 MOUNTFSTAB=/usr/bin/mountfstab.py
-DEFAULTDDOPTIONS=ro,iocharset=utf8,umask=0227
-DEFAULTSQUASHOPTIONS=ro,umask=227,_netdev,noexec,uid=root,gid=root,loop
-DDEXTREGEXPR='\.dd$$\|\.img$$\|\.001$$\|\.iso$$\|\.tao$$'
-#DEFAULTMNT='eqXX/itemXX-type(HD,pendrive)-NumMat/'
-DEFAULTMNT='XXX/itemXX-XX-MXXXX/'
 
 PHONY := _all
-_all: mountfstab.config all
+_all: all
 
-#PHONY += importconfig
-#importconfig:
-include mountfstab.config
+all: mountfstabs mountmakesubdirs
+umount: umountmakesubdirs umountfstabs
 
-mountfstab.config:
-	echo 'SUBDIRS=' >> mountfstab.config ;\
-        echo 'GROUP=' >> mountfstab.config ;\
-	echo 'all: subdirs dd' >> mountfstab.config ;\
-	echo 'umount: umountsubdirs umountsquash' >> mountfstab.config
-	chmod o-r mountfstab.config
 
-PHONY += subdirs $(SUBDIRS)
-subdirs: $(SUBDIRS)
-$(SUBDIRS):
-	$(MAKE) -C $@
-
-PHONY += checkop
-checkop:
-ifeq ($(strip $(GROUP)), )
-	@echo Please, fill GROUP in the mountfstab.config file.
-	exit 1
-endif
-
-PHONY += dd
-dd: checkop squash dd.fstab
-	$(MOUNTFSTAB) --mkdir -v dd.fstab
-
-dd.fstab: dd.list
-	sed -e '/^ *$$/d' dd.list | while read ddfile ddmnt ;\
-	do mkdir -p $$ddmnt ;\
-	$(MKFSTAB) $$ddfile --basemountdir=$$ddmnt \
-	  --appendoptions=$(DEFAULTDDOPTIONS),gid=$(GROUP) ;\
-	done > dd.fstab
-	chmod 600 dd.fstab
-
-dd.list:
-	$(MAKE) dd.list.example
-	@echo Missing file: dd.list
-	exit 1
-
-dd.list.example:
-	sed -e '/^ *$$/d' squash.list | while read squashfile squashmnt ;\
-	do find $$squashmnt -type f | grep $(DDEXTREGEXPR) | \
-	  awk '{print $$1" $(DEFAULTMNT)" }' ; \
-	done > dd.list.example
-	chmod 600 dd.list.example
-
-PHONY += listddmnt
-listddmnt:
-	@if test -e dd.fstab; then $(MOUNTFSTAB) --listmnt dd.fstab; fi
-	@for i in $(SUBDIRS); do \
-		$(MAKE) -s -C "$$i" listddmnt; \
+PHONY += mountmakesubdirs
+mountmakesubdirs: 
+	for i in $(MAKESUBDIRS); do \
+		$(MAKE) -C "$$i" ; \
 	done
 
-PHONY += squash
-squash: squash.fstab
-	$(MOUNTFSTAB) --mkdir -v squash.fstab
-
-squash.fstab: squash.list
-	sed -e '/^ *$$/d' squash.list | while read squashfile squashmnt ;\
-	do mkdir -p -m 500 $$squashmnt ;\
-	echo $$squashfile $$squashmnt auto $(DEFAULTSQUASHOPTIONS) ;\
-	done > squash.fstab
-	chmod 600 squash.fstab
-
-squash.list:
-	ls *.squash | while read i;\
-	do echo $$i $$i.dir ;\
-	done > squash.list
-	chmod 600 squash.list
-
-
-PHONY += umountsubdirs
-umountsubdirs: 
-	for i in $(SUBDIRS); do \
+PHONY += umountmakesubdirs
+umountmakesubdirs: 
+	for i in $(MAKESUBDIRS); do \
 		$(MAKE) -C "$$i" umount; \
 	done
 
-PHONY += umountsquash
-umountsquash: umountdd
-	$(MOUNTFSTAB) --umount -v squash.fstab
+PHONY += mountfstabs
+mountfstabs:
+	for i in $(FSTABS); do \
+		$(MOUNTFSTAB) --mkdir -v "$$i"; \
+	done
 
-PHONY += umountdd
-umountdd:
-	$(MOUNTFSTAB) --umount -v dd.fstab
+PHONY += umountfstabs
+umountfstabs:
+	for i in $(FSTABS); do \
+		$(MOUNTFSTAB) --umount -v "$$i"; \
+	done
+
+PHONY += listmnt
+listmnt:
+	@for i in $(FSTABS); do \
+		$(MOUNTFSTAB) --listmnt "$$i"; \
+	done
+	@for i in $(MAKESUBDIRS); do \
+		$(MAKE) -s -C "$$i" listmnt; \
+	done
+
 
 .PHONY: all umount $(PHONY)

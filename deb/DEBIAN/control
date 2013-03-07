@@ -1,5 +1,5 @@
 Package: setec-mountfstab
-Version: 5
+Version: 6
 Section: extra
 Priority: optional
 Architecture: amd64
