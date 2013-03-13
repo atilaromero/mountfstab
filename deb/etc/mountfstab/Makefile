@@ -1,7 +1,9 @@
-MAKESUBDIRS=
-FSTABS=
-REVFSTABS=$$(for x in ${FSTABS}; do echo $$x;done | tac)
-MOUNTFSTAB=/usr/bin/mountfstab.py
+FSTABS:=$(shell ls *.fstab || echo '')
+ifeq ($(FSTABS),)
+  MAKESUBDIRS:=*/
+endif
+REVFSTABS:=$(shell for x in ${FSTABS}; do echo $$x;done | tac)
+MOUNTFSTAB:=/usr/bin/mountfstab.py
 
 PHONY := _all
 _all: all
