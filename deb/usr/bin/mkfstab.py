@@ -3,7 +3,8 @@ import os,sys
 import optparse
 
 def main():
-    p=optparse.OptionParser(usage="usage: %prog [options] <paths...>")
+    p=optparse.OptionParser(usage="""usage: %prog [options] <paths...>
+    Ex: mkfstab.py imagem.dd --appendoptions=ro,gid=#OP#,umask=0277 >> dd.fstab""")
     p.add_option('--basemountdir',
                  default='')
     p.add_option('--appendoptions',
