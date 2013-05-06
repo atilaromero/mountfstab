@@ -6,13 +6,13 @@ def main():
     p=optparse.OptionParser(usage="usage: %prog [options] <paths...>")
     p.add_option('--basemountdir',
                  default='')
-    p.add_option('--appendoptions',
-                 default='ro,iocharset=utf8')
+    p.add_option('-o','--options',
+                 default='ro,iocharset=utf8,gid=root,umask=0227')
     options, arguments = p.parse_args()
     if len(arguments)<1:
         p.error('path is not optional')
     for path in arguments:
-        printparts(path,options.basemountdir,options.appendoptions)
+        printparts(path,options.basemountdir,options.options)
 
 def printparts(rpath,basemountdir,appendoptions):
   x=0
